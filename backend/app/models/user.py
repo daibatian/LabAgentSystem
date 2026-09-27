@@ -23,5 +23,5 @@ class User(Base):
         String(50), comment="头像", nullable=True, sort_order=7
     )
     status: Mapped[int] = mapped_column(
-        default=1, comment="状态：0-正常 1-禁用", sort_order=8
+        default=1, comment="状态：0-禁用 1-正常", sort_order=8
     )

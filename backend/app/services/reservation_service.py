@@ -179,7 +179,7 @@ def expire_pending_reservations():
 async def run_expire_scan():
     try:
         while True:
-            await asyncio.to_thread(expire_pending_reservations())
+            await asyncio.to_thread(expire_pending_reservations)
             await asyncio.sleep(60)
     except asyncio.CancelledError:
         return
