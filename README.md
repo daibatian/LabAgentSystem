@@ -312,16 +312,6 @@ npm run dev
 
 ---
 
-## 已知问题
-
-- `backend/app/services/reservation_service.py` 中定时任务写成了 `await asyncio.to_thread(expire_pending_reservations())`，传入的是函数调用结果而非函数本身，会导致该任务在执行一轮后异常中断。应改为传入函数引用 `expire_pending_reservations`（可参考 `main.py` 中预热向量库的写法）。
-- `backend/app/models/user.py` 中 `status` 字段的注释与实际语义相反，代码中 `1` 表示正常。
-- `backend/app/services/ai_service.py` 是早期的 AI 实现（手写 function calling，仅支持查询），已被 `agent_service.py` 取代，目前没有路由引用，保留作为实现对比。
-- `backend/app/api/equipment.py` 中部分接口把当前用户的类型标注写成了 `Equipment`，实际为 `User`，不影响运行但容易误导。
-- 项目目前没有单元测试。
-
----
-
 ## 说明
 
 - 后端所有接口的返回值都经过 `Response` 统一包装，前端在响应拦截器中依据 `data.code` 判断成功与否，遇到 `401` 会自动清除本地登录状态并跳转登录页。
