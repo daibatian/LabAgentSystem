@@ -1,0 +1,33 @@
+# ================= 密钥 / 环境变量 =================
+# 任何 .env 一律忽略，防止真实密钥再次入库
+.env
+.env.*
+!.env.example
+!frontend/.env.development
+
+# ================= Python / 后端 =================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+build/
+dist/
+
+# 运行时数据（首次启动会自动重建，不需要入库）
+backend/uploads/
+backend/data/chroma/
+backend/data/db/
+*.log
+logs/
+
+# ================= 编辑器 / 系统 =================
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.sw?
