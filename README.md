@@ -119,7 +119,8 @@ uvicorn app.main:app --reload --port 8000
 > 注意：`backend/.env` 需要自行创建，缺少必填配置时程序会在启动阶段直接报错。
 >
 > 
-> ### 3. 创建管理员账号
+
+### 3. 创建管理员账号
 
 注册接口写死了 `role = "student"`（见 `backend/app/services/auth_service.py`），
 所以页面上注册出来的账号都是学生，进不了管理端——用户 / 实验室 / 设备 / 预约审核这些接口都要求 `admin`。
@@ -128,8 +129,10 @@ uvicorn app.main:app --reload --port 8000
 
 最省事的做法是先注册一个普通账号，再把它提权（不用自己造密码哈希）：
 
-```sql
+```
+sql：
 UPDATE users SET role = 'admin' WHERE username = 'your_name';
+```
 
 ### 4. 启动前端
 
