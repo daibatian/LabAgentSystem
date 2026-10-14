@@ -117,8 +117,21 @@ uvicorn app.main:app --reload --port 8000
 首次启动会加载向量模型并预热知识库，日志出现相关提示后再发请求，可避免第一个请求超时。
 
 > 注意：`backend/.env` 需要自行创建，缺少必填配置时程序会在启动阶段直接报错。
+>
+> 
+> ### 3. 创建管理员账号
 
-### 3. 启动前端
+注册接口写死了 `role = "student"`（见 `backend/app/services/auth_service.py`），
+所以页面上注册出来的账号都是学生，进不了管理端——用户 / 实验室 / 设备 / 预约审核这些接口都要求 `admin`。
+项目不预置任何账号，管理员得自己往数据库里加：先启动一次后端让程序自动建好表，
+再往 `users` 表写入一条 `role = 'admin'` 的记录。
+
+最省事的做法是先注册一个普通账号，再把它提权（不用自己造密码哈希）：
+
+```sql
+UPDATE users SET role = 'admin' WHERE username = 'your_name';
+
+### 4. 启动前端
 
 ```bash
 cd frontend
@@ -128,7 +141,7 @@ npm run dev
 
 浏览器打开 <http://localhost:5173>，后端接口文档在 <http://127.0.0.1:8000/docs>。
 
-### 4. 使用 VS Code 调试
+### 5. 使用 VS Code 调试
 
 项目已内置调试配置，打开 `backend` 目录后直接运行 `Python Debugger: FastAPI` 即可，等同于手动执行 `uvicorn app.main:app`。
 
@@ -310,17 +323,6 @@ npm run dev
 - 检索时会取相似度最高的若干条，按 `1 / (1 + 距离)` 归一化打分，丢弃分数低于 `0.5` 的结果，最终最多取前 2 篇拼入提示词
 - 应用启动阶段会预热向量模型，把首次加载开销前置，避免首个用户请求超时
 
----
-
-## 已知问题
-
-- `backend/app/services/reservation_service.py` 中定时任务写成了 `await asyncio.to_thread(expire_pending_reservations())`，传入的是函数调用结果而非函数本身，会导致该任务在执行一轮后异常中断。应改为传入函数引用 `expire_pending_reservations`（可参考 `main.py` 中预热向量库的写法）。
-- `backend/app/models/user.py` 中 `status` 字段的注释与实际语义相反，代码中 `1` 表示正常。
-- `backend/app/services/ai_service.py` 是早期的 AI 实现（手写 function calling，仅支持查询），已被 `agent_service.py` 取代，目前没有路由引用，保留作为实现对比。
-- `backend/app/api/equipment.py` 中部分接口把当前用户的类型标注写成了 `Equipment`，实际为 `User`，不影响运行但容易误导。
-- 项目目前没有单元测试。
-
----
 
 ## 说明
 
